@@ -15,7 +15,8 @@ create table if not exists tracks
 create table if not exists compilation_tracks
 ( 
 	id_collection int not null references collection_(id_collection),
-	id_track int not null references tracks(id_track)
+	id_track int not null references tracks(id_track),
+	primary key(id_collection, id_track)
 );
 
 create table if not exists albums
@@ -28,7 +29,8 @@ create table if not exists albums
 create table if not exists albums_track
 (
 	 id_album int not null references albums(id_album),
-	 id_track int not null references tracks(id_track)
+	 id_track int not null references tracks(id_track),
+	 primary key(id_album, id_track)
 );
 
 create table if not exists performer
@@ -46,14 +48,16 @@ create table if not exists genre
 create table if not exists albums_performers
 (
 	id_album int not null references albums(id_album),
-	id_performer int not null references performer(id_performer)
+	id_performer int not null references performer(id_performer),
+	primary key(id_album, id_performer)
 );
 
 
 create table if not exists genre_performers
 (
 	id_genre int not null references genre(id_genre),	
-	id_performer int not null references performer(id_performer)
+	id_performer int not null references performer(id_performer),
+	primary key(id_genre, id_performer)
 );
 
 
