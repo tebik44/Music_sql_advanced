@@ -19,15 +19,25 @@ from albums_track at2
 group by a.album_name
 
 --все исполнители, которые не выпустили альбомы в 2020 году
-select *
+select p.performer_name
 from albums_performers ap 
 	join albums a on a.id_album = ap.id_album
 	join performer p ON p.id_performer = ap.id_performer
-where a.production_year != '2020-01-01'
+where p.performer_name not in (select p.performer_name
+				 from albums_performers ap 
+				 join albums a on a.id_album = ap.id_album
+				 join performer p ON p.id_performer = ap.id_performer
+				 where a.production_year = '2020-01-01')
 
 --названия сборников, в которых присутствует конкретный исполнитель (выберите сами)
 select c.name_, p.performer_name
-from collection_ c , performer p
+from performer p 
+	join albums_performers ap on p.id_performer = ap.id_performer
+	join albums a on ap.id_album = a.id_album 
+	join albums_track at2 on at2.id_album_ = a.id_album
+	join tracks t on t.id_track = at2.id_track_
+	join compilation_tracks ct on ct.id_track = t.id_track
+	join collection_ c on ct.id_collection = c.id_collection
 where p.performer_name = 'Igorrr'
 
 --название альбомов, в которых присутствуют исполнители более 1 жанра
@@ -62,6 +72,16 @@ from albums a
 group by a.album_name -- я так и не понял, как сделать это задание правильно, чтобы выводились все самые маленькие значения, то есть только 1
 order by count(t.name_) -- подскажите пожалуйста, как это сделать///!
 
-
-
+--Во внешнем запросе вам нужно объединить таблицы треков и альбомов и сгруппировать их по альбомам
+select a.album_name
+from albums_track at2 
+	join albums a on a.id_album = at2.id_album_
+	join tracks t on t.id_track = at2.id_track_
+group by a.album_name
+having count(t.name_) = (SELECT count(t2.name_)
+                            FROM albums a2  JOIN tracks t2 
+                            ON a2.id_album = t2.id_track 
+                            GROUP BY a2.album_name 
+                            ORDER BY count(t2.name_)
+                            LIMIT 1);
 

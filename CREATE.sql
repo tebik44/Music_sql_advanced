@@ -62,3 +62,5 @@ create table if not exists genre_performers
 
 
 
+DROP TABLE IF EXISTS phone_number;
+DROP TABLE IF EXISTS client;
